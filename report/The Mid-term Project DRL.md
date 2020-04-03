@@ -32,7 +32,7 @@ Note: I do have tried to use colab to train my model, but this is my first time 
 
 Here I use the DQN model to train. Here is my model. Notice that in order to train my network more effective, I use the double Q-learning method, Dueling Deep Q-network, and prioritized replay to speed up.
 
-![image-20191102110202772](The Mid-term Project DRL.assets/image-20191102110202772.png)
+![image-20191102110202772](./assets/image-20191102110202772.png)
 
 #### Q-Network
 
@@ -40,7 +40,7 @@ Here is my basic Q-network structure. In this model, I have two hidden layers us
 
 Since we get our input state from gym outcome, there are 8 input  units for the network, and 4 output units for the output, standing for the value of each action.
 
- ![img](The Mid-term Project DRL.assets/4155986-9fef6ee4dcf856a1.webp) 
+ ![img](./assets/4155986-9fef6ee4dcf856a1.webp) 
 
 After the relu hidden layers, there is a dueling deep Q Network structure. More details of the structure of dueling deep Q network are in the following section.  
 
@@ -106,7 +106,7 @@ After building the network layers, we need to build two network, one is the eval
 
 Here is the basic structure of dueling deep Q network[2]
 
-![img](The Mid-term Project DRL.assets/4155986-01c76dca38f8cdc6.webp) 
+![img](./assets/4155986-01c76dca38f8cdc6.webp) 
 
 
 
@@ -127,7 +127,7 @@ with tf.variable_scope('Q'):
     out = self.V + (self.A - tf.reduce_mean(self.A, axis=1, keep_dims=True))  # Q = V(s) + A(s,a)
 ```
 
-![image-20191108232815632](The Mid-term Project DRL.assets/image-20191108232815632.png)
+![image-20191108232815632](./assets/image-20191108232815632.png)
 
 #### Double Q-Network
 
@@ -135,7 +135,7 @@ with tf.variable_scope('Q'):
 
 The main idea of Double Q-Network is the following formula 
 
-![img](The Mid-term Project DRL.assets/4155986-fe9db451ace25e85.webp) 
+![img](./assets/4155986-fe9db451ace25e85.webp) 
 
 This mainly reflects in the learning part
 
@@ -243,7 +243,7 @@ A sumtree is a Binary Tree, that is a tree with only a maximum of two children f
 
 Updating the tree and sampling will be really efficient (O(log n)).
 
-![img](The Mid-term Project DRL.assets/1_Go9DNr7YY-wMGdIQ7HQduQ.png)
+![img](./assets/1_Go9DNr7YY-wMGdIQ7HQduQ.png)
 
 ```python
 class SumTree(object):
@@ -514,11 +514,11 @@ we need to do update during the learning process. We decay the epsilon and repla
 
 The following is the result that I train for less than 1000 Episodes. 
 
-![simple-Animation](The Mid-term Project DRL.assets/simple-Animation.gif)
+![simple-Animation](./assets/simple-Animation.gif)
 
 Generally speaking, the model is stable and good. Here is the leader board for LunarLander-v2, it seems as if my model performs well.
 
-![image-20191102201853904](The Mid-term Project DRL.assets/image-20191102201853904.png)
+![image-20191102201853904](./assets/image-20191102201853904.png)
 
 ### Personal Thoughts
 
@@ -652,7 +652,7 @@ for i_episode in range(MAX_EPISODES):
 
 I firstly apply the method mentioned above, and try to train the network, but finally I got the result below. As we can see that it learn a policy that "No-Landing", the agent is afraid of crash, so it decides not to land at all. 
 
-![Animation_cv_fail](The Mid-term Project DRL.assets/Animation_cv_fail.gif)
+![Animation_cv_fail](./assets/Animation_cv_fail.gif)
 
 **Why** ?
 
@@ -705,13 +705,13 @@ Others small modification are also need, but I will not cover the detail (please
 
 Unfortunately, the agent learns a negative policy, that is do nothing ... In fact, this policy does win much more credit than random operation. It is at least much better than random search and "No-Landing" policy.
 
-![slience_policy](The Mid-term Project DRL.assets/slience_policy.gif)
+![slience_policy](./assets/slience_policy.gif)
 
 ### Model3--Result
 
 Since that training directly from raw pixels is so difficult, I wonder that whether I can train with both raw pixels and status. Which means that I train a neural network with the raw pixels as input and try to output status, then use the pre-training DQN to output the Q-value of the status. Based on this idea, I design the following neural network
 
-![png](The Mid-term Project DRL.assets/png.png)
+![png](./assets/png.png)
 
 The network on the left side is the dueling DQN mentioned above, and the right sides are the convolution neural network and try to get the current states according to raw pixels as input. Here are the structure of the convolution neural network.
 
@@ -794,7 +794,7 @@ def build_net(self):
 
 Here is the diagram of the convolution neural network.
 
-![image-20191108225742060](The Mid-term Project DRL.assets/image-20191108225742060.png)
+![image-20191108225742060](./assets/image-20191108225742060.png)
 
 The framework of the training the convolution neural network
 
@@ -840,21 +840,21 @@ for i_episode in range(MAX_EPISODES):
 
 After training for a whole night, the convolution neural network converges to the status where the loss is approximately 0.01. Though it seems exciting to get such low loss, it is  actually not accurate enough, because value fields of the 8 states in mostly fall into the range[0, 1], thus, the loss is still to high. The results are shown below, it is just slightly better than random policy. /(ㄒoㄒ)/~~Although I tried to train two networks in turn, the effect was still poor
 
-![Animation_false](The Mid-term Project DRL.assets/Animation_false.gif)
+![Animation_false](./assets/Animation_false.gif)
 
 ### Model4--Result
 
 We separated the two networks and trained them separately. Now we try to combine the two networks together. The following graph show the main structure of the neural network. It does look like the DQN framework.
 
-![image-20191108232050371](The Mid-term Project DRL.assets/image-20191108232050371.png)
+![image-20191108232050371](./assets/image-20191108232050371.png)
 
 What is different from the previous model is that it is embed with cnn layers. 
 
-![image-20191108232032975](The Mid-term Project DRL.assets/image-20191108232032975.png)
+![image-20191108232032975](./assets/image-20191108232032975.png)
 
 I firstly adopt the cnn structure in model3, after training for whole day, I was upset to find that the neural network gradient had exploded, all the output is 'nan' no matter what is it the input. To deal with this problem, I add batch normalization layer after the convolution layer.
 
-![image-20191108232617459](The Mid-term Project DRL.assets/image-20191108232617459.png)
+![image-20191108232617459](./assets/image-20191108232617459.png)
 
 ```python
 def _build_net(self):
@@ -961,7 +961,7 @@ def _build_net(self):
 
 But this model is hard to converge to the optimal policy, after training for a whole day, it still leans a policy which is quite similar to "No-Landing" policy
 
-![Animation-cnn-agent](The Mid-term Project DRL.assets/Animation-cnn-agent.gif)
+![Animation-cnn-agent](./assets/Animation-cnn-agent.gif)
 
 to avoid the "No-Landing" policy, I play some tricks that, I forced the model to free-falling at first, which increase the possibility to land on the floor and get higher score.
 
@@ -975,7 +975,7 @@ to avoid the "No-Landing" policy, I play some tricks that, I forced the model to
 
 And here are the results
 
-![Animation-trick](The Mid-term Project DRL.assets/Animation-trick.gif)
+![Animation-trick](./assets/Animation-trick.gif)
 
 ### Personal Thoughts
 
@@ -985,7 +985,7 @@ Here are difficulties I have met during the training process
 
 training by pixels is much more difficult to converge. This is one of the cost function during my training process, we will find that it may increase suddenly and unexpectedly. 
 
-![image-20191107233037649](The Mid-term Project DRL.assets/image-20191107233037649.png)
+![image-20191107233037649](./assets/image-20191107233037649.png)
 
 ## Reference 
 
